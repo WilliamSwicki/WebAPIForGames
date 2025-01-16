@@ -17,10 +17,20 @@ const port = 3000;
 // sendMessage();
 
  //route ex
- app.get("/",function(request, responce){
+ app.get("/index",function(request, responce){
      // responce.send("Hello Everyone!");
-     responce.sendFile(path.join(__dirname,"public","app.js"));
+     responce.sendFile(path.join(__dirname,"public","index.html"));
  });
+
+ app.get("/addEntry",function(request, responce){
+    // responce.send("Hello Everyone!");
+    responce.sendFile(path.join(__dirname,"public","addEntry.html"));
+});
+
+app.get("/login",function(request, responce){
+    // responce.send("Hello Everyone!");
+    responce.sendFile(path.join(__dirname,"public","login.html"));
+});
 
  app.get("/testjson",(req, res)=>{
      res.sendFile(path.join(__dirname,"public","json/games.json"));
