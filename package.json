@@ -12,5 +12,13 @@
   "dependencies": {
     "express": "^4.21.2",
     "nodemon": "^3.1.9"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WilliamSwicki/WebAPIForGames.git"
+  },
+  "bugs": {
+    "url": "https://github.com/WilliamSwicki/WebAPIForGames/issues"
+  },
+  "homepage": "https://github.com/WilliamSwicki/WebAPIForGames#readme"
 }
