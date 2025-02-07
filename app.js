@@ -9,6 +9,9 @@ const path = require("path");
 const session = require("express-session");
 const bcrypt = require("bcryptjs");
 const { register } = require("module");
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 
 const app = express();
@@ -30,6 +33,9 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model("User", userSchema, "users");
 
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
  //middleware to serve static data
  app.use(express.static(path.join(__dirname, "public")));
@@ -42,6 +48,18 @@ const User = mongoose.model("User", userSchema, "users");
      console.log(message);
  }
 =======
+app.use(session({
+    secret:"12345",
+    resave:false,
+    saveUninitialized:false,
+    cookie:{secure:false}// Set to true is using https
+}));
+
+function isAuthenticated(req,res, next){
+    if(req.session.user)return next();
+    return res.redirect("/login");
+}
+
 app.use(session({
     secret:"12345",
     resave:false,
@@ -86,6 +104,31 @@ app.post("/register", async (req,res)=>{
     }
 });
 
+app.get("/register", (req,res)=>{
+    res.sendFile(path.join(__dirname, "public", "register.html"));
+})
+
+app.post("/register", async (req,res)=>{
+    try{
+        const {username, password, email} = req.body;
+
+        const existingUser = await User.findOne({username});
+
+        if(existingUser){
+            return res.send("<p>Username already taken. Try a different one</p><br><a href='/register.html'>Back</a></li>")
+        }
+
+        const hashedPassword = bcrypt.hashSync(password, 10);
+        const newUser = new User({username, password:hashedPassword, email});
+        await newUser.save();
+
+        res.redirect("/login");
+
+    }catch(err){
+        res.status(500).send("Error registering new user.");
+    }
+});
+
  //route ex
  app.get("/index",function(request, responce){
      // responce.send("Hello Everyone!");
@@ -93,10 +136,13 @@ app.post("/register", async (req,res)=>{
  });
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
  app.get("/addEntry",function(request, responce){
     // responce.send("Hello Everyone!");
     responce.sendFile(path.join(__dirname,"public","addEntry.html"));
 =======
+=======
+>>>>>>> Stashed changes
 app.get("/logedIndex",isAuthenticated,(req,res)=>{
     res.sendFile(path.join(__dirname,"public","logedIndex.html"));
 });
@@ -157,9 +203,12 @@ app.get("/login",function(request, responce){
 });
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
  app.get("/testjson",(req, res)=>{
      res.sendFile(path.join(__dirname,"public","json/games.json"));
 =======
+=======
+>>>>>>> Stashed changes
 app.post("/login", async (req,res)=>{
     const {username, password} = req.body;
     console.log(req.body);
