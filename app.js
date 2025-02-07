@@ -1,7 +1,3 @@
-<<<<<<< Updated upstream
- const express = require("express");
- const path = require("path");
-=======
 const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
@@ -9,25 +5,11 @@ const path = require("path");
 const session = require("express-session");
 const bcrypt = require("bcryptjs");
 const { register } = require("module");
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
 
 const app = express();
 const port = 3000;
 
-<<<<<<< Updated upstream
-=======
+
 const itemSchema = new mongoose.Schema({
     item:String
 });
@@ -42,77 +24,12 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model("User", userSchema, "users");
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
  //middleware to serve static data
  app.use(express.static(path.join(__dirname, "public")));
 
- let message = "Wouldn't you like to be a Pepper to?";
-
-<<<<<<< Updated upstream
- function sendMessage()
- {
-     console.log(message);
- }
-=======
-app.use(session({
-    secret:"12345",
-    resave:false,
-    saveUninitialized:false,
-    cookie:{secure:false}// Set to true is using https
-}));
-
-function isAuthenticated(req,res, next){
-    if(req.session.user)return next();
-    return res.redirect("/login");
-}
-
-app.use(session({
-    secret:"12345",
-    resave:false,
-    saveUninitialized:false,
-    cookie:{secure:false}// Set to true is using https
-}));
-
-function isAuthenticated(req,res, next){
-    if(req.session.user)return next();
-    return res.redirect("/login");
-}
-
-app.use(session({
-    secret:"12345",
-    resave:false,
-    saveUninitialized:false,
-    cookie:{secure:false}// Set to true is using https
-}));
-
-function isAuthenticated(req,res, next){
-    if(req.session.user)return next();
-    return res.redirect("/login");
-}
-
-app.use(session({
-    secret:"12345",
-    resave:false,
-    saveUninitialized:false,
-    cookie:{secure:false}// Set to true is using https
-}));
-
-function isAuthenticated(req,res, next){
-    if(req.session.user)return next();
-    return res.redirect("/login");
-}
+//Set up middleware to parse json requests
+app.use(bodyParser.json());
+app.use(express.urlencoded({extended:true}));
 
 app.use(session({
     secret:"12345",
@@ -129,108 +46,12 @@ function isAuthenticated(req,res, next){
 //MongoDB connection setup
 const mongoURI = "mongodb://localhost:27017/Item";
 mongoose.connect(mongoURI);
->>>>>>> Stashed changes
 
-// sendMessage();
+const db = mongoose.connection;
 
-app.get("/register", (req,res)=>{
-    res.sendFile(path.join(__dirname, "public", "register.html"));
-})
-
-app.post("/register", async (req,res)=>{
-    try{
-        const {username, password, email} = req.body;
-
-        const existingUser = await User.findOne({username});
-
-        if(existingUser){
-            return res.send("<p>Username already taken. Try a different one</p><br><a href='/register.html'>Back</a></li>")
-        }
-
-        const hashedPassword = bcrypt.hashSync(password, 10);
-        const newUser = new User({username, password:hashedPassword, email});
-        await newUser.save();
-
-        res.redirect("/login");
-
-    }catch(err){
-        res.status(500).send("Error registering new user.");
-    }
-});
-
-app.get("/register", (req,res)=>{
-    res.sendFile(path.join(__dirname, "public", "register.html"));
-})
-
-app.post("/register", async (req,res)=>{
-    try{
-        const {username, password, email} = req.body;
-
-        const existingUser = await User.findOne({username});
-
-        if(existingUser){
-            return res.send("<p>Username already taken. Try a different one</p><br><a href='/register.html'>Back</a></li>")
-        }
-
-        const hashedPassword = bcrypt.hashSync(password, 10);
-        const newUser = new User({username, password:hashedPassword, email});
-        await newUser.save();
-
-        res.redirect("/login");
-
-    }catch(err){
-        res.status(500).send("Error registering new user.");
-    }
-});
-
-app.get("/register", (req,res)=>{
-    res.sendFile(path.join(__dirname, "public", "register.html"));
-})
-
-app.post("/register", async (req,res)=>{
-    try{
-        const {username, password, email} = req.body;
-
-        const existingUser = await User.findOne({username});
-
-        if(existingUser){
-            return res.send("<p>Username already taken. Try a different one</p><br><a href='/register.html'>Back</a></li>")
-        }
-
-        const hashedPassword = bcrypt.hashSync(password, 10);
-        const newUser = new User({username, password:hashedPassword, email});
-        await newUser.save();
-
-        res.redirect("/login");
-
-    }catch(err){
-        res.status(500).send("Error registering new user.");
-    }
-});
-
-app.get("/register", (req,res)=>{
-    res.sendFile(path.join(__dirname, "public", "register.html"));
-})
-
-app.post("/register", async (req,res)=>{
-    try{
-        const {username, password, email} = req.body;
-
-        const existingUser = await User.findOne({username});
-
-        if(existingUser){
-            return res.send("<p>Username already taken. Try a different one</p><br><a href='/register.html'>Back</a></li>")
-        }
-
-        const hashedPassword = bcrypt.hashSync(password, 10);
-        const newUser = new User({username, password:hashedPassword, email});
-        await newUser.save();
-
-        res.redirect("/login");
-
-    }catch(err){
-        res.status(500).send("Error registering new user.");
-    }
+db.on("error", console.error.bind(console, "MongoDB connection error"));
+db.once("open", ()=>{
+    console.log("Connected to MongoDB Database");
 });
 
 app.get("/register", (req,res)=>{
@@ -264,23 +85,6 @@ app.post("/register", async (req,res)=>{
      responce.sendFile(path.join(__dirname,"public","index.html"));
  });
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
- app.get("/addEntry",function(request, responce){
-    // responce.send("Hello Everyone!");
-    responce.sendFile(path.join(__dirname,"public","addEntry.html"));
-=======
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
 app.get("/logedIndex",isAuthenticated,(req,res)=>{
     res.sendFile(path.join(__dirname,"public","logedIndex.html"));
 });
@@ -332,7 +136,6 @@ app.post("/addEntry", async(req,res)=>{
     }catch(err){
         res.status(501).json({error:"Failed to add new person."});
     }
->>>>>>> Stashed changes
 });
 
 app.get("/login",function(request, responce){
@@ -340,22 +143,6 @@ app.get("/login",function(request, responce){
     responce.sendFile(path.join(__dirname,"public","login.html"));
 });
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
- app.get("/testjson",(req, res)=>{
-     res.sendFile(path.join(__dirname,"public","json/games.json"));
-=======
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
 app.post("/login", async (req,res)=>{
     const {username, password} = req.body;
     console.log(req.body);
@@ -402,17 +189,17 @@ app.delete("/deleteitem/:id",isAuthenticated, async (req,res)=>{
         res.status(500).json({error:"Failed to get items"});
     }
     //  res.sendFile(path.join(__dirname,"public","json/games.json"));
->>>>>>> Stashed changes
  });
 
-setTimeout(()=>{
-    console.log("Hello 2 seconds later")
-},2000);
-
-setTimeout(()=>{
-    console.log("Hello now")
-},0);
-
+ app.get("/testjson/:id", async (req, res)=>{
+    try{
+        const items = await Item.findById(req.params.id);
+        res.json(items);
+    }catch(err){
+        res.status(500).json({error:"Failed to get items"});
+    }
+    //  res.sendFile(path.join(__dirname,"public","json/games.json"));
+ });
 
  app.listen(port, function(){
      console.log(`Server is running on port: ${port}`);
