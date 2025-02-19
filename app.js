@@ -1,5 +1,11 @@
- const express = require("express");
- const path = require("path");
+require("dotenv").config();
+const express = require("express");
+const mongoose = require("mongoose");
+const bodyParser = require("body-parser");
+const path = require("path");
+const session = require("express-session");
+const bcrypt = require("bcryptjs");
+const { register } = require("module");
 
 const app = express();
 const port = 3000;
@@ -9,12 +15,53 @@ const port = 3000;
 
  let message = "Wouldn't you like to be a Pepper to?";
 
- function sendMessage()
- {
-     console.log(message);
- }
+app.use(session({
+    secret: process.env.SESSION_SECRET,
+    resave:false,
+    saveUninitialized:false,
+    cookie:{secure:false}// Set to true is using https
+}));
 
-// sendMessage();
+function isAuthenticated(req,res, next){
+    if(req.session.user)return next();
+    return res.redirect("/login");
+}
+
+//MongoDB connection setup
+const mongoURI = process.env.MONGODB_URI/*"mongodb://localhost:27017/Item"*/;
+mongoose.connect(mongoURI);
+
+const db = mongoose.connection;
+
+db.on("error", console.error.bind(console, "MongoDB connection error"));
+db.once("open", ()=>{
+    console.log("Connected to MongoDB Database");
+});
+
+app.get("/register", (req,res)=>{
+    res.sendFile(path.join(__dirname, "public", "register.html"));
+})
+
+app.post("/register", async (req,res)=>{
+    try{
+        const {username, password, email} = req.body;
+
+        const existingUser = await User.findOne({username});
+
+        if(existingUser){
+            return res.send("<p>Username already taken. Try a different one</p><br><a href='/register.html'>Back</a></li>")
+        }
+
+        const hashedPassword = bcrypt.hashSync(password, 10);
+        const newUser = new User({username, password:hashedPassword, email});
+        await newUser.save();
+
+        res.redirect("/login");
+
+    }catch(err){
+        res.status(500).send("Error registering new user.");
+    }
+});
 
  //route ex
  app.get("/index",function(request, responce){
